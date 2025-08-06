@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Do You Love Me?</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fff0f5;
+      text-align: center;
+      overflow: hidden;
+      color: black;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .sticker {
+      width: 200px;
+      height: auto;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 2em;
+      margin-bottom: 20px;
+      font-weight: bold;
+      color: black;
+    }
+
+    .buttons button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin: 10px;
+      cursor: pointer;
+      position: relative;
+      background-color: white;
+      color: black;
+      border: 1px solid black;
+      border-radius: 5px;
+    }
+
+    .hearts-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .heart {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      transform: rotate(45deg);
+      animation: fall linear infinite;
+      top: 0;
+    }
+
+    .heart::before,
+    .heart::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+    }
+
+    .heart::before {
+      top: -10px;
+      left: 0;
+    }
+
+    .heart::after {
+      left: -10px;
+      top: 0;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(100vh) rotate(45deg);
+      }
+    }
+
+    .message {
+      display: none;
+      font-size: 2em;
+      margin-top: 20px;
+      color: #d63384;
+      z-index: 2;
+      position: relative;
+    }
+
+    .love-gif {
+      width: 200px;
+      height: auto;
+      margin: 30px auto;
+    }
+
+    .exit-btn {
+      padding: 10px 20px;
+      margin-top: 20px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: white;
+      color: black;
+      border: 1px solid black;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="mainPage">
+    <img
+      src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif"
+      alt="Snoopy Love"
+      class="sticker"
+    />
+    <h1>Do you love me?</h1>
+    <div class="buttons">
+      <button id="yesBtn">Yes</button>
+      <button id="noBtn">No</button>
+    </div>
+  </div>
+
+  <div id="lovePage" style="display:none;">
+    <div class="hearts-container" id="hearts"></div>
+    <div class="message" id="finalMessage">
+      <img
+        src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif"
+        alt="Love GIF"
+        class="love-gif"
+      />
+      <p>I knew it 😆</p>
+      <button class="exit-btn" onclick="window.location.reload()">Exit</button>
+    </div>
+  </div>
+
+  <script>
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+
+    noBtn.addEventListener("mouseover", () => {
+      const randX = Math.floor(Math.random() * (window.innerWidth - 100));
+      const randY = Math.floor(Math.random() * (window.innerHeight - 50));
+      noBtn.style.position = "absolute";
+      noBtn.style.left = randX + "px";
+      noBtn.style.top = randY + "px";
+    });
+
+    yesBtn.addEventListener("click", () => {
+      document.getElementById("mainPage").style.display = "none";
+      document.getElementById("lovePage").style.display = "block";
+
+      const colors = ["red", "blue", "yellow", "purple", "green", "orange", "pink"];
+
+      const heartInterval = setInterval(() => {
+        const heart = document.createElement("div");
+        heart.classList.add("heart");
+
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.animationDuration = Math.random() * 2 + 3 + "s";
+
+        // Apply color to main heart + pseudo elements
+        const style = document.createElement("style");
+        const uniqueClass = "heart-" + Math.floor(Math.random() * 100000);
+        heart.classList.add(uniqueClass);
+        style.innerHTML = `
+          .${uniqueClass} {
+            background-color: ${color};
+          }
+          .${uniqueClass}::before {
+            background-color: ${color};
+          }
+          .${uniqueClass}::after {
+            background-color: ${color};
+          }
+        `;
+        document.head.appendChild(style);
+
+        document.getElementById("hearts").appendChild(heart);
+        setTimeout(() => heart.remove(), 5000);
+      }, 100);
+
+      setTimeout(() => {
+        document.getElementById("finalMessage").style.display = "block";
+        clearInterval(heartInterval);
+      }, 3000);
+    });
+  </script>
+</body>
+</html>
